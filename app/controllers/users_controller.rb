@@ -47,18 +47,19 @@ class UsersController < ApplicationController
   end
 
   def unitTests
-    @unitVal = `ruby -Itest test/unit/user_test.rb`
-    @numTests = @unitVal.scan(/^\d+ tests,/)
-    @numTests = @numTests.first
-    @numTests = @numTests.split
-    @numTests = @numTests.first
-    @numTests = Integer(@numTests)
-    @numFailures = @unitVal.scan(/\s\d+ failures,/)
-    @numFailures = @numFailures.first
-    @numFailures = @numFailures.split
-    @numFailures = @numFailures.first
-    @numFailures = Integer(@numFailures)
-    render json: {totalTests: @numTests, output: @unitVal, nrFailed: @numFailures}
+    myUnitTests = `ruby -Itest test/unit/user_test.rb`
+    myTestCount = myUnitTests.scan(/^\d+ tests,/)
+    myTestCount = myTestCount.first
+    myTestCount = myTestCount.split
+    myTestCount = myTestCount.first
+    myTestCount = Integer(myTestCount)
+    myFailCount = myUnitTests.scan(/\s\d+ failures,/)
+    myFailCount = myFailCount.first
+    myFailCount = myFailCount.split
+    myFailCount = myFailCount.first
+    myFailCount = Integer(myFailCount)
+    render json: {totalTests: myTestCount, output: myUnitTests, nrFailed: myFailCount}
+
   end
 
 
