@@ -1,4 +1,32 @@
-<h1>Users#index</h1>
-<p>Find me in app/views/users/index.html.erb</p>
-<%=p params %>
+<center>
 
+<h1>Account Manager</h1>
+
+<!-- First thing to do is check for errors. If there are no errors, we do nothing. -->
+<% if @err0.nil? %>
+<% else %>
+	<% if @err0 == -1 %>
+	<p><FONT COLOR = RED> Your username or password was incorrect. Please try again. <br> Error code: <%= @err0 %></FONT> </p>
+	<% elsif @err0 == -2 %>
+	<p><FONT COLOR = RED> Username has already been taken. Please pick another username. </FONT></p>
+	<% elsif @err0 == -3 %>
+	<p><FONT COLOR = RED> Your username can't be blank and can be no longer than 128 characters. Please pick another username. </FONT></p>
+	<% elsif @err0 == -4 %>
+	<p><FONT COLOR = RED> Password is too long (maximum is 128 characters). Please pick another password. </FONT></p>
+	<% end %>
+<% end %>
+
+<!-- Ruby code create username and password fields as well as buttons that link directly to our login and add functionality -->
+<%= form_tag("/", method: "post") do %>
+	<%= label_tag(:user, "Username:") %>
+	<%= text_field_tag(:user) %>
+	<%= label_tag(:password, "Password:") %>
+	<%= password_field_tag(:password) %>
+	<br><br>
+	<center>
+	<%= submit_tag("Log In", :onclick => "this.form.action = '/users/login'") %>
+	<%= submit_tag("Add User", :onclick => "this.form.action = '/users/add'") %>
+	</cener
+<% end %>
+
+</center>

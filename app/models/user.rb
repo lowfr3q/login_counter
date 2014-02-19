@@ -22,15 +22,17 @@ class User < ActiveRecord::Base
 		User.create(:user => username, :password => pass, :count => 1)
 	end
 
+# Method login. Params: username- string, pass- string
 	def self.login(username, pass)
+		#Create the new user object (skipping the test for unique). We will not save this user.
 		user = User.new(:user => username, :password => pass, :skip_uniq => true)
+		
+		#A little hack-y, but this is how we use the controller to check validity
+		#If the user is valid, we then proceed to check if the user exists in the database.
 		if user.valid?
 			dummyUser = User.find_by_user_and_password(username, pass)
-
 			if dummyUser.present?
-				# if dummyUser != nil
 				dummyUser.count += 1
-				# end
 				dummyUser.save
 				dummyUser
 			else
@@ -43,6 +45,7 @@ class User < ActiveRecord::Base
 		end	
 	end 
 
+#resetFixture clears the User database
 	def self.TESTAPI_resetFixture
 		User.delete_all
 		SUCCESS

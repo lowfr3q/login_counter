@@ -3,48 +3,55 @@ class UsersController < ApplicationController
   	@users = User.all
   end
 
+#Login asks the model for a new User and confirms that it is error free. Else, it records and error in @err0
   def login
   	@user = User.login(params[:user], params[:password])
-  	err0 = User::SUCCESS
+  	@err0 = User::SUCCESS
   	if @user.errors.any?
-  		err0 = User::ERR_BAD_CREDENTIALS
+  		@err0 = User::ERR_BAD_CREDENTIALS
   	end
 
-  	if err0 > 0
-      render json: {:errCode => err0, :count => @user.count}
+  	if @err0 > 0
+      # return @user
+      render :landingpage#json: {:errCode => err0, :count => @user.count}
   	else 
-      render json: {:errCode => err0}
+      render :index #json: {:errCode => err0}
   	end
   end
 
+#Add asks the model to sign-up a new User view the signup method. The bulk of the error reporting code is here, and again
+#is recorded in err0
   def add
   	@user = User.signup(params[:user], params[:password] )
-  	err1 = User::SUCCESS
+  	@err0 = User::SUCCESS
   	if @user.present? and @user.errors.any?
   		if @user.errors.messages.keys[0] == :user
   			if @user.errors.messages[:user][0] == "is too long (maximum is 128 characters)"
-  				err1 = User::ERR_BAD_USERNAME
+  				@err0 = User::ERR_BAD_USERNAME
   			elsif @user.errors.messages[:user][0] == "has already been taken"
-  				err1 = User::ERR_USER_EXISTS                     
+  				@err0 = User::ERR_USER_EXISTS                     
   			elsif @user.errors.messages[:user][0] == "can't be blank"
-  				err1 = User::ERR_BAD_USERNAME
+  				@err0 = User::ERR_BAD_USERNAME
   			end
       else # @user.errors.messages.keys[0] == :password
-        err1 = User::ERR_BAD_PASSWORD
+        @err0 = User::ERR_BAD_PASSWORD
   		end
     end
 
-  	if err1 > 0
-      render json: {:errCode => err1, :count => 1}
+  	if @err0 > 0
+      # return @user
+      render :landingpage#json: {:errCode => @err0, :count => 1}
   	else 
-      render json: {:errCode => err1}
+      render :index#json: {:errCode => @err0}
   	end
   end
 
+#resetFixture resets the database and reports a success code if the operation completes.
   def resetFixture
     User.TESTAPI_resetFixture
     render json: {:errCode => 1}
   end
+
 
   def unitTests
     myUnitTests = `ruby -Itest test/unit/user_test.rb`
